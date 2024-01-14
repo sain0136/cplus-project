@@ -11,6 +11,7 @@ public:
     string lastname;
     int age;
     double salary;
+    bool mainUser = false;
     /**
      * Default constructor for the Person class.
      *
@@ -56,7 +57,7 @@ public:
 
     void toString()
     {
-        cout << firstname << " " << lastname << " " << age << " " << salary << endl;
+        cout << firstname << " " << lastname << " " << age << " $" << salary << endl;
     }
 };
 

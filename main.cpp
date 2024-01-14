@@ -3,58 +3,94 @@
 #include <cstdlib>
 #include <time.h>
 #include <stdio.h>
-#include "Person.h" // Include the Person class
 #include <vector>
+#include <iostream>
+#include <thread>
+#include <chrono>
+
+#include "Person.h" // Include the Person class
+
 using namespace std;
 
-void userInput(string gender, Person &p);
+// Function Prototypes
+void makeDefaultUser(string gender, Person &p);
+void guessAndDisplayGender();
+void makeRandomUser();
 void mainMenu();
 void makePerson();
 void listPeople();
+void pauseThread(int seconds, string message);
+void makePersonWithPointer();
+void deleteAllPersonPointers();
+void clearScreen();
+void makeRandomUser();
+void guessAndDisplayGender();
 
+// Global Variables
 vector<Person> allCreatedPeoplelist;
+vector<Person *> allCreatedPersonPointers;
+struct
+{
+    string femaleMessage = "Hi, Soul Sister!";
+    string maleMessage = "Hey, Brother!";
+    string gender = "";
+} randomMessage;
 int main()
 {
     /* code */
+    string skipIntro = "n";
+    cout << "Do you want to skip intro? (y/n)" << endl;
+    cin >> skipIntro;   
+    makeRandomUser();
+    if (skipIntro == "y")
+    {
+        mainMenu();
+    }
+    clearScreen();
     Person person;
-    srand(time(NULL));
-    int token = rand() % 2 + 1;
-    struct
-    {
-        string femaleMessage = "Hi, Lady!";
-        string maleMessage = "Hey Bro!";
-        string gender = "";
-    } messageStruct;
-
-    messageStruct.gender = (token == 1) ? "Female" : "Male";
-    cout << "Hello, World!" << endl;
-    if (messageStruct.gender == "Male")
-    {
-        cout << messageStruct.maleMessage << endl;
-    }
-    else if (messageStruct.gender == "Female")
-    {
-        cout << messageStruct.femaleMessage << endl;
-    }
-    userInput(messageStruct.gender, person);
-    Person randomPerson("Random", "Person", 0, 0);
-    allCreatedPeoplelist.push_back(randomPerson);
+    guessAndDisplayGender();
+    makeDefaultUser(randomMessage.gender, person);
     mainMenu();
     cout << "Bye, " << person.firstname << endl
          << "Who is " << person.age << " years old" << endl;
     cout << "All your data will be cleared " << endl;
+    deleteAllPersonPointers();
     return 0;
 }
 
-void userInput(string gender, Person &p) // Passing by refrence here , if you dont you wont be updating object you passed in
+void makeRandomUser()
+{
+    Person *randomPerson = new Person("Random", "Person", 0, 0);
+    allCreatedPersonPointers.push_back(randomPerson);
+}
+
+void guessAndDisplayGender()
+{
+    srand(time(NULL));
+    int token = rand() % 2 + 1;
+    randomMessage.gender = (token == 1) ? "Female" : "Male";
+    cout << "Hello, Welcome To My C++ Program - IMU Verdavity" << endl;
+    pauseThread(3, "Loading... I am gussing your gender!");
+    if (randomMessage.gender == "Male")
+    {
+        cout << randomMessage.maleMessage << endl;
+    }
+    else if (randomMessage.gender == "Female")
+    {
+        cout << randomMessage.femaleMessage << endl;
+    }
+    pauseThread(2, "Was I right? Lol now make me a user! ..You!");
+}
+
+void makeDefaultUser(string gender, Person &p) // Passing by refrence here , if you dont you wont be updating object you passed in
 {
     string firstname = "";
     string lastname = "";
     int age = 0;
     string doShoutout = "";
-    printf("Welcome, your gender was %s \n", gender.c_str()); // makes a c style char pointer since printf is c func
-    cout << "Tell us your first name and last name" << endl;
-    cin >> firstname >>  lastname;
+    printf("Welcome, your gender guess was %s \n", gender.c_str()); // makes a c style char pointer since printf is c func
+    cout << "Now, enter your first name and last name" << endl;
+    cin >> firstname >> lastname;
     cout << "Cool nice to meet you:" << firstname << " " << lastname << endl;
     p.firstname = firstname;
     p.lastname = lastname;
@@ -73,19 +109,23 @@ void userInput(string gender, Person &p) // Passing by refrence here , if you do
     cout << "Cool you are " << ageResponse << endl;
     cout << "Enter your salary" << endl;
     cin >> p.salary;
-    cout << "You have been added" << endl;
+    pauseThread(3, "Ok, you are all set! Saving data...");
+    clearScreen();
     p.toString();
-    allCreatedPeoplelist.push_back(p);
-    cout << "Would you like a shoutout?" << endl;
+    Person *defaulUserPtr = &p;
+    allCreatedPersonPointers.push_back(defaulUserPtr);
+    cout << "Would you like a shoutout? Type yes or y" << endl;
     cin >> doShoutout;
-    if (doShoutout == "yes")
+    if (doShoutout == "yes" || doShoutout == "y")
     {
         p.shoutOut();
     }
     else
     {
-        cout << "Ok, bye" << endl;
+        cout << "Ok, bye no shoutout!" << endl;
     }
+    pauseThread(3, "Ok redirecting to main menu");
+    clearScreen();
 }
 
 void mainMenu()
@@ -104,9 +144,10 @@ void mainMenu()
     cout << "10. Exit" << endl;
     cout << "Choose an option: " << endl;
     cin >> userChoice;
+    clearScreen();
     if (userChoice == "1")
     {
-        makePerson();
+        makePersonWithPointer();
     }
     else if (userChoice == "2")
     {
@@ -123,7 +164,7 @@ void mainMenu()
     }
     mainMenu();
 }
-
+// Not used anymore because of pointers practice in C++
 void makePerson()
 {
     try
@@ -149,10 +190,75 @@ void makePerson()
 }
 
 void listPeople()
-{
-    cout << "There a total of " << allCreatedPeoplelist.size() << " people in the list of created people!" << endl;
-    for (int i = 0; i < allCreatedPeoplelist.size(); i++)
+{   
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cout << "There a total of " << allCreatedPersonPointers.size() << " people in the list of created people!" << endl;
+    cout << "\n";
+    for (int i = 0; i < allCreatedPersonPointers.size(); i++)
     {
-        allCreatedPeoplelist[i].toString();
+        cout << "\n";
+        cout << i + 1 << ". ";
+        allCreatedPersonPointers[i]->toString();
+        cout << "\n";
     }
+    string userChoice = "NO";
+    cout << "Press enter to continue" << endl;
+    while (userChoice != "")
+    {
+        getline(cin, userChoice);
+    }
+    pauseThread(3, "Redirecting to main menu");
+    clearScreen();
+}
+
+void pauseThread(int seconds, string message)
+{
+    cout << message << endl;
+    // Simulating some processing time
+    this_thread::sleep_for(chrono::seconds(seconds));
+}
+
+void makePersonWithPointer()
+{
+    try
+    {
+        Person *person = new Person;
+        cout << "Enter the person first name: " << endl;
+        cin >> person->firstname;
+        cout << "Enter the person last name: " << endl;
+        cin >> person->lastname;
+        cout << "Enter the age: " << endl;
+        cin >> person->age;
+        cout << "Enter the persons Salary: " << endl;
+        cin >> person->salary;
+
+        allCreatedPersonPointers.push_back(person);
+    }
+    catch (const std::exception &e)
+    {
+        cout << "Something went wrong" << endl;
+        std::cerr << e.what() << '\n';
+        clog << e.what() << '\n';
+        return;
+    }
+}
+
+/**
+ * Deletes all the Person pointers in the allCreatedPersonPointers list.
+ * This deletes each Person object and removes all pointers from the vector.
+ * After this, you can safely let the vector go out of scope or delete it.
+ * @throws None
+ */
+void deleteAllPersonPointers()
+{
+    for (Person *person : allCreatedPersonPointers)
+    {
+        delete person;
+    }
+    allCreatedPeoplelist.clear();
+}
+
+void clearScreen()
+{
+    system("cls");
 }
