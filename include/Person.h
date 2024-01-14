@@ -1,17 +1,22 @@
+/*
+Person.h file will contain the class definition (declarations of the class and its members)
+but not the full implementation of the methods. It's placed in the include directory.
+*/
 #ifndef PERSON_H
 #define PERSON_H
 
 #include <string>
-using namespace std;
+#include <iostream>
 
 class Person
 {
 public:
-    string firstname;
-    string lastname;
+    std::string firstname;
+    std::string lastname;
     int age;
     double salary;
     bool mainUser = false;
+
     /**
      * Default constructor for the Person class.
      *
@@ -21,10 +26,8 @@ public:
      *
      * @throws ErrorType description of error
      */
-    Person() : firstname(""), lastname(""), age(0), salary(0.0)
-    {
-        clog << "User Created Using Default Constructor" << endl;
-    }
+    Person();
+
     /**
      * Constructor for the Person class.
      *
@@ -34,10 +37,7 @@ public:
      *
      * @throws None
      */
-    Person(std::string fn, std::string ln, int a, float s) : firstname(fn), lastname(ln), age(a), salary(s)
-    {
-        clog << "User Created Using Parameterized Constructor" << endl;
-    }
+    Person(std::string fn, std::string ln, int a, double s, bool mu = false);
     /**
      * Destructor for the Person class.
      *
@@ -45,20 +45,11 @@ public:
      *
      * @throws None
      */
-    ~Person()
-    {
-        clog << "User Destroyed" << endl;
-    }
+    ~Person();
 
-    void shoutOut()
-    {
-        cout << "Shout to the people!!!" << endl;
-    }
-
-    void toString()
-    {
-        cout << firstname << " " << lastname << " " << age << " $" << salary << endl;
-    }
+    void shoutOut();
+    void toString();
+    std::string serialize() const; // Serialization function declaration
 };
 
 #endif

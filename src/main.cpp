@@ -25,6 +25,7 @@ void deleteAllPersonPointers();
 void clearScreen();
 void makeRandomUser();
 void guessAndDisplayGender();
+void writeToFile(const vector<Person *> &people, const string filename);
 
 // Global Variables
 vector<Person> allCreatedPeoplelist;
@@ -40,7 +41,7 @@ int main()
     /* code */
     string skipIntro = "n";
     cout << "Do you want to skip intro? (y/n)" << endl;
-    cin >> skipIntro;   
+    cin >> skipIntro;
     makeRandomUser();
     if (skipIntro == "y")
     {
@@ -56,6 +57,20 @@ int main()
     cout << "All your data will be cleared " << endl;
     deleteAllPersonPointers();
     return 0;
+}
+/**
+ * Writes the vector of Person pointers to a file.
+ *
+ * @param people The vector of Person pointers to be written to file. -
+ * constant reference to a vector of pointers to Person objects.
+ * The const indicates that the vector should not be modified inside the function.
+ * Pointers are used to refer to Person objects
+ * @param filename The name of the file to which the data will be written.
+ *
+ * @throws ErrorType A description of the error that can occur during the writing process.
+ */
+void writeToFile(const vector<Person *> &people, const string filename)
+{
 }
 
 void makeRandomUser()
@@ -190,7 +205,7 @@ void makePerson()
 }
 
 void listPeople()
-{   
+{
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cout << "There a total of " << allCreatedPersonPointers.size() << " people in the list of created people!" << endl;
     cout << "\n";
