@@ -9,7 +9,7 @@
 #include <chrono>
 
 #include "Person.h" // Include the Person class
-
+#include "DiskUtils.h"
 using namespace std;
 
 // Function Prototypes
@@ -25,8 +25,9 @@ void deleteAllPersonPointers();
 void clearScreen();
 void makeRandomUser();
 void guessAndDisplayGender();
-void writeToFile(const vector<Person *> &people, const string filename);
-
+void writeToDisk();
+void wrongInputMessage(string message);
+void readPeopleFromFile();
 // Global Variables
 vector<Person> allCreatedPeoplelist;
 vector<Person *> allCreatedPersonPointers;
@@ -58,6 +59,16 @@ int main()
     deleteAllPersonPointers();
     return 0;
 }
+
+void readPeopleFromFile()
+{
+    deleteAllPersonPointers();
+    allCreatedPersonPointers = loadPeopleFromFile("people.txt");
+}
+void wrongInputMessage(string message = "")
+{
+    cout << "Wrong input " << message << endl;
+}
 /**
  * Writes the vector of Person pointers to a file.
  *
@@ -69,8 +80,33 @@ int main()
  *
  * @throws ErrorType A description of the error that can occur during the writing process.
  */
-void writeToFile(const vector<Person *> &people, const string filename)
+void writeToDisk()
 {
+    cout << "Writing to disk will overwrite previous data. Are you sure?" << endl;
+    string userChoice = "";
+    cout << "Press enter to Yes/Y and No/N to return" << endl;
+    while (userChoice != "y" || userChoice != "Yes")
+    {
+        getline(cin, userChoice);
+
+        if (userChoice == "No" || userChoice == "N")
+        {
+            pauseThread(3, "Redirecting to main menu");
+            clearScreen();
+            mainMenu();
+            return;
+        }
+
+        if (userChoice == "Yes" || userChoice == "y")
+        {
+            break;
+        }
+        wrongInputMessage("Try again");
+    }
+    writeToFile(allCreatedPersonPointers, "people.txt");
+    pauseThread(3, "Written to disk. Redirecting to main menu");
+    clearScreen();
+    mainMenu();
 }
 
 void makeRandomUser()
@@ -160,23 +196,29 @@ void mainMenu()
     cout << "Choose an option: " << endl;
     cin >> userChoice;
     clearScreen();
-    if (userChoice == "1")
+
+    switch (stoi(userChoice))
     {
+    case 1:
         makePersonWithPointer();
-    }
-    else if (userChoice == "2")
-    {
+        break;
+    case 2:
         listPeople();
-    }
-    else if (userChoice == "10")
-    {
+        break;
+    case 3:
+        writeToDisk();
+        break;
+    case 5:
+        readPeopleFromFile();
+        break;
+    case 10:
         cout << "Bye" << endl;
         return;
-    }
-    else
-    {
+    default:
         cout << "Invalid choice or in dev" << endl;
+        break;
     }
+
     mainMenu();
 }
 // Not used anymore because of pointers practice in C++

@@ -7,6 +7,8 @@ but not the full implementation of the methods. It's placed in the include direc
 
 #include <string>
 #include <iostream>
+#include <vector>
+#include <sstream>
 
 class Person
 {
@@ -50,6 +52,7 @@ public:
     void shoutOut();
     void toString();
     std::string serialize() const; // Serialization function declaration
+    static Person* deserialize(std::string serialized);
 };
 
 #endif
