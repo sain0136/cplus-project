@@ -1,0 +1,3 @@
+Random,Person,0,0.000000,0
+Terrance,Person,45,50000.000000,0
+Red,Fox,66,60000.000000,0
