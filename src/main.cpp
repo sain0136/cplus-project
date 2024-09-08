@@ -8,7 +8,7 @@
 #include <thread>
 #include <chrono>
 
-#include "Person.h" // Include the Person class
+#include "Person.h"
 #include "DiskUtils.h"
 using namespace std;
 
